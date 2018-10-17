@@ -1,21 +1,23 @@
-val_dir = '../../test_jpg';
-run('/home/cventuraroy/matconvnet-1.0-beta23/matlab/vl_setupnn.m');
+%%Change val_dir with the directory where the face images are stored
+val_dir = 'data/test/images_jpg';
+%%Change it with the directory where vl_setupnn.m is stored
+run('../matconvnet-1.0-beta23/matlab/vl_setupnn.m');
 listing = dir(val_dir);
 video_names = [];
 sample_num = 10;
-gpuDevice(3);
+gpuDevice(1);
 
 fileID = fopen('predictions_reg_avg_max_l28_carles_localization_normalization.csv','w');
 A ={'VideoName','ValueExtraversion', 'ValueAgreeableness', 'ValueConscientiousness', 'ValueNeurotisicm','ValueOpenness'};
 fprintf(fileID, '%s,', A{1,1:end-1});
 fprintf(fileID, '%s\n', A{1,end});
-net = load('../train/data/exp_regression_avgmax_l28_localization_with_normalization/net-epoch-10.mat');
+net = load('./net-images.mat');
 net = net.net;
 net = dagnn.DagNN.loadobj(net);
 net.mode = 'test' ;
 net.removeLayer('loss');
 net.move('gpu') ;
-imdb = load('../utils/imdb_trainval_carles.mat');
+imdb = load('./imdb_trainval_images.mat');
 inputVar = 'x0';
 for i=1:size(listing,1)
    if strcmp(listing(i).name,'.') || strcmp(listing(i).name,'..')
